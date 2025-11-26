@@ -1,6 +1,11 @@
-"use client";
+'use client'
 
-import { Card, CardHeader, CardTitle } from "./ui/card";
+import React, { useState } from 'react';
+import axios, { AxiosError } from 'axios';
+import dayjs from 'dayjs';
+import { X } from 'lucide-react';
+import { Message } from '@/model/User';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -11,96 +16,75 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "./ui/alert-dialog";
-import { Button } from "./ui/button";
-import { Message } from "@/model/User";
-import axios from "axios";
-import { toast } from "sonner";
+} from '@/components/ui/alert-dialog';
+import { Button } from './ui/button';
+import { useToast } from '@/components/ui/use-toast';
+import { ApiResponse } from '@/types/ApiResponse';
 
 type MessageCardProps = {
   message: Message;
   onMessageDelete: (messageId: string) => void;
 };
 
-const MessageCard = ({ message, onMessageDelete }: MessageCardProps) => {
-  const getIdAsString = (id: any): string | null => {
-    if (!id && id !== 0) return null;
-    // If it's an object (Mongoose ObjectId), try toString()
-    if (typeof id === "object") {
-      try {
-        if (typeof id.toString === "function") {
-          const s = id.toString();
-          return s;
-        }
-        // maybe { $oid: '...' }
-        if (typeof id.$oid === "string") return id.$oid;
-        return null;
-      } catch {
-        return null;
-      }
-    }
-    // primitive -> coerce to string
-    return String(id);
-  };
+export function MessageCard({ message, onMessageDelete }: MessageCardProps) {
+  const { toast } = useToast();
 
   const handleDeleteConfirm = async () => {
-    const id = getIdAsString(message._id);
-
-    // Debug logs to help you catch wrong ids
-    console.log("MessageCard: attempting delete for id:", message._id, "->", id);
-
-    if (!id) {
-      toast.error("Missing message id — cannot delete");
-      console.error("Delete aborted: message._id is missing or invalid:", message._id);
-      return;
-    }
-
     try {
-      const response = await axios.delete<{ success: boolean; message: string }>(
-        `/api/delete-message/${encodeURIComponent(id)}`
+      const response = await axios.delete<ApiResponse>(
+        `/api/delete-message/${message._id}`
       );
+      toast({
+        title: response.data.message,
+      });
+      onMessageDelete(message._id);
 
-      // optimistic UI: remove immediately
-      onMessageDelete(id);
-      toast.success(response.data?.message || "Message deleted");
-    } catch (error: any) {
-      if (axios.isAxiosError(error)) {
-        toast.error(error.response?.data?.message || "Failed to delete message");
-        console.error("Axios delete error:", error.response?.data ?? error.message);
-      } else {
-        toast.error("Failed to delete message");
-        console.error("Delete error:", error);
-      }
-    }
+    } catch (error) {
+      const axiosError = error as AxiosError<ApiResponse>;
+      toast({
+        title: 'Error',
+        description:
+          axiosError.response?.data.message ?? 'Failed to delete message',
+        variant: 'destructive',
+      });
+    } 
   };
 
   return (
-    <Card className="bg-white shadow-md">
-      <CardHeader className="flex items-center justify-between">
-        <CardTitle className="text-lg font-semibold">{message.content}</CardTitle>
-
-        <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <Button variant="destructive">Delete</Button>
-          </AlertDialogTrigger>
-
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-              <AlertDialogDescription>
-                This action cannot be undone. This will permanently delete the message.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-
-            <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction onClick={handleDeleteConfirm}>Delete</AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
+    <Card className="card-bordered">
+      <CardHeader>
+        <div className="flex justify-between items-center">
+          <CardTitle>{message.content}</CardTitle>
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant='destructive'>
+                <X className="w-5 h-5" />
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This action cannot be undone. This will permanently delete
+                  this message.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>
+                  Cancel
+                </AlertDialogCancel>
+                <AlertDialogAction onClick={handleDeleteConfirm}>
+                  Continue
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </div>
+        <div className="text-sm">
+          {dayjs(message.createdAt).format('MMM D, YYYY h:mm A')}
+        </div>
       </CardHeader>
+      <CardContent></CardContent>
     </Card>
   );
-};
-
-export default MessageCard;
+}
