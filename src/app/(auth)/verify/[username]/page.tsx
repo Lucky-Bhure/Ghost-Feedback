@@ -1,6 +1,5 @@
 'use client'
 import { useParams, useRouter } from 'next/navigation';
-import React from 'react'
 import { toast } from 'sonner';
 import { useForm } from 'react-hook-form';
 import { verifySchema } from '@/schemas/verifySchema';

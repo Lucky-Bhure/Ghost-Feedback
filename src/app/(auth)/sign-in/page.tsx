@@ -1,5 +1,4 @@
 'use client'
-import React, { useState } from 'react'
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
@@ -15,6 +14,7 @@ import { Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { signInSchema } from '@/schemas/signInSchema'
 import { signIn } from 'next-auth/react'
+import { useState } from "react"
 
 const page = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -38,9 +38,9 @@ const page = () => {
         });
 
         if(result?.error) {
-            // if(result.error === 'CredentialsSignin') {
+            if(result.error === 'CredentialsSignin') {
                 toast.error("Incorrect Username or password")
-            // }
+            }
         }
 
         if(result?.url) {
@@ -56,7 +56,7 @@ const page = () => {
                     <h1 className='text-4xl font-extrabold tracking-tight lg:text-5xl mb-6'>
                         Join Ghost Feedback
                     </h1>
-                    <p className='mb-4'>Sign in to start your anonymous adventure</p>
+                    <p className='mb-4'>Sign in to your anonymous adventure</p>
                 </div>
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-6'>
@@ -101,8 +101,8 @@ const page = () => {
                 </Form>
                 <div className='text-center mt-4'>
                     <p>
-                        Already a member?{' '}
-                        <Link href='/sign-in' className='text-blue-600 hover:text-blue-800'>Sign in</Link>
+                        Create Account {' '}
+                        <Link href='/sign-up' className='text-blue-600 hover:text-blue-800'>Sign Up</Link>
                     </p>
                 </div>
             </div>
