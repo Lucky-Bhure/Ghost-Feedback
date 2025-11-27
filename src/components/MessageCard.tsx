@@ -1,10 +1,8 @@
 'use client'
 
-import React, { useState } from 'react';
 import axios, { AxiosError } from 'axios';
 import dayjs from 'dayjs';
 import { X } from 'lucide-react';
-import { Message } from '@/model/User';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   AlertDialog,
@@ -22,9 +20,14 @@ import { toast } from 'sonner';
 import { ApiResponse } from '@/types/ApiResponse';
 
 type MessageCardProps = {
-  message: Message;
+  message: {
+    _id: string;
+    content: string;
+    createdAt: Date;
+  };
   onMessageDelete: (messageId: string) => void;
 };
+
 
 export default function MessageCard({ message, onMessageDelete }: MessageCardProps) {
 
