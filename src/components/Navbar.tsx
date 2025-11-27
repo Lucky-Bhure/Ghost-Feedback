@@ -1,6 +1,6 @@
 'use client'
 import Link from 'next/link'
-import { useSession} from 'next-auth/react'
+import { useSession, signOut } from 'next-auth/react'
 import { User } from 'next-auth'
 import { Button } from './ui/button'
 
@@ -16,9 +16,7 @@ const Navbar = () => {
         <a className='text-xl font-bold mb-4 md:mb-0' href="#">Ghost Feedback</a>
         {
           session ? (
-            <Link href={"/"}>
-              <Button className='w-fit'>Logout</Button>
-            </Link>
+              <Button className='w-fit' onClick={() => signOut({ callbackUrl: "/sign-in" })}>Logout</Button>
           ): (
             <Link href={'/sign-in'}>
               <Button className='w-fit'>Login</Button>
