@@ -39,44 +39,38 @@ export default function MessageCard({
   };
 
   return (
-    <Card className="card-bordered">
+    <Card>
       <CardHeader>
-        <div className="flex justify-between items-start w-full gap-2">
-          <div className="flex-1 min-w-0">
-            <CardTitle className="truncate">{message.content}</CardTitle>
-            <div className="text-sm text-muted-foreground mt-1">
-              {dayjs(message.createdAt).format("MMM D, YYYY h:mm A")}
-            </div>
+        <div className="w-full flex flex-col gap-4">
+          <div className="w-full">
+            <CardTitle className="resize-none text-justify">{message.content}</CardTitle>
           </div>
 
-          <AlertDialog>
-            <AlertDialogTrigger asChild>
-              <Button variant="destructive" size="sm" aria-label="Delete message">
-                <X className="w-4 h-4" />
-              </Button>
-            </AlertDialogTrigger>
+          <div className="w-full">
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="destructive" size="sm" aria-label="Delete message">
+                  Delete
+                </Button>
+              </AlertDialogTrigger>
 
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                <AlertDialogDescription>
-                  This action cannot be undone. This will permanently delete this message.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This action cannot be undone. This will permanently delete this message.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
 
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction onClick={handleDeleteConfirm}>Continue</AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleDeleteConfirm}>Continue</AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
         </div>
       </CardHeader>
-
-      <CardContent>
-        {/* Display full message content here (if you want more than the title) */}
-        <p className="whitespace-pre-wrap">{message.content}</p>
-      </CardContent>
     </Card>
   );
 }

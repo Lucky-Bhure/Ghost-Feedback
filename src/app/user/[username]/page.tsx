@@ -141,14 +141,13 @@ export default function SendMessage() {
           <CardContent className="flex flex-col space-y-4">
             { 
               suggestMessages.map((message, index) => (
-                <Button
+                <p
                   key={index}
-                  variant="outline"
-                  className="mb-2"
+                  className="mb-2 resize-none text-center border-2 rounded-sm p-2"
                   onClick={() => handleMessageClick(message)}
                 >
                   {message}
-                </Button>
+                </p>
               ))
             }
           </CardContent>
