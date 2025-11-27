@@ -40,10 +40,10 @@ export default function MessageCard({
 
   return (
     <Card>
-      <CardHeader>
+      <CardContent>
         <div className="w-full flex flex-col gap-4">
           <div className="w-full">
-            <CardTitle className="resize-none text-justify">{message.content}</CardTitle>
+            <CardTitle className="resize-none text-justify text-md">{message.content}</CardTitle>
           </div>
 
           <div className="w-full">
@@ -70,7 +70,7 @@ export default function MessageCard({
             </AlertDialog>
           </div>
         </div>
-      </CardHeader>
+      </CardContent>
     </Card>
   );
 }
