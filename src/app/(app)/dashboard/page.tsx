@@ -186,7 +186,7 @@ const Page = () => {
       <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
         {messages?.length > 0 ? (
           messages.map((message, index) => (
-            <MessageCard key={message._id ?? index} message={message} onDelete={() => fetchMessages(false)} />
+            <MessageCard key={index} message={message} onDelete={() => fetchMessages(false)} />
           ))
         ) : (
           <p>No messages to display.</p>
