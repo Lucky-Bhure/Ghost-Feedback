@@ -21,7 +21,7 @@ import { ApiResponse } from '@/types/ApiResponse';
 
 type MessageCardProps = {
   message: {
-    _id: string;
+    _id: unknown;
     content: string;
     createdAt: Date;
   };
