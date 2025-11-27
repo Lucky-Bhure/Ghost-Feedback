@@ -34,10 +34,6 @@ const Page = () => {
 
   const acceptMessages = watch("acceptMessages");
 
-  const handleDeleteMessage = (messageId: string) => {
-    setMessages((prev) => prev.filter((msg) => msg._id !== messageId));
-  };
-
   const fetchAcceptMessage = useCallback(async () => {
     setIsSwitchLoading(true);
     try {
@@ -92,6 +88,7 @@ const Page = () => {
       toast.error(axiosError.response?.data.message || "Failed to update message settings");
     }
   };
+
 
   if (!session || !session.user) {
     return (
@@ -190,7 +187,6 @@ const Page = () => {
             <MessageCard
               key={index}
               message={message}
-              onMessageDelete={(id) =>handleDeleteMessage(id)}
             />
           ))
         ) : (

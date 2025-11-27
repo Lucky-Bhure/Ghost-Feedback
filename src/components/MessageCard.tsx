@@ -18,18 +18,11 @@ import {
 import { Button } from './ui/button';
 import { toast } from 'sonner';
 import { ApiResponse } from '@/types/ApiResponse';
-
-type MessageCardProps = {
-  message: {
-    _id: unknown;
-    content: string;
-    createdAt: Date;
-  };
-  onMessageDelete: (messageId: string) => void;
-};
+import { Message } from '@/model/User';
 
 
-export default function MessageCard({ message, onMessageDelete }: MessageCardProps) {
+
+export default function MessageCard(message : Message) {
 
   const handleDeleteConfirm = async () => {
     try {
@@ -37,7 +30,6 @@ export default function MessageCard({ message, onMessageDelete }: MessageCardPro
         `/api/delete-message/${message._id}`
       );
       toast.message(response.data.message);
-      onMessageDelete(message._id);
 
     } catch (error) {
       const axiosError = error as AxiosError<ApiResponse>;
