@@ -153,7 +153,7 @@ const page = () => {
                         />
 
 
-                        <Button type="submit" disabled={isSubmitting}>
+                        <Button type="submit" disabled={isSubmitting} className="w-full">
                             {
                                 isSubmitting ? (
                                     <>
