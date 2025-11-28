@@ -90,7 +90,7 @@ Follow these steps to set up the project locally.
     MONGODB_URI=your_mongodb_connection_string
     RESEND_API_KEY=your_resend_api_key
     NEXTAUTH_SECRET=your_nextauth_secret
-    GEMINI_API_KEY depending on your setup
+    GEMINI_API_KEY=your_api_key depending on your setup
     ```
 
 4.  **Run the development server:**
