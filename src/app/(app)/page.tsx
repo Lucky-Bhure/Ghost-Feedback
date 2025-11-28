@@ -14,13 +14,13 @@ export default function Home() {
   return (
     <>
       {/* Main content */}
-      <main className="w-full h-[90vh] grow flex flex-col items-center justify-center px-4 md:px-24 py-12 bg-gray-800 text-white">
+      <main className="w-full h-[90vh] grow flex flex-col items-center justify-center px-4 md:px-24 py-12 bg-[#000123] text-white">
         <section className="text-center md:mb-12">
           <h1 className="text-3xl md:text-5xl font-bold">
-            Dive into the World of Anonymous Feedback
+            Journey Into the Landscape of Anonymous Feedback
           </h1>
           <p className="mt-3 md:mt-4 text-base md:text-lg">
-            Ghost Feedback - Where your identity remains a secret.
+            Ghost Feedback - Where your identity stays completely hidden.
           </p>
         </section>
 
@@ -33,16 +33,10 @@ export default function Home() {
             {messages.map((message, index) => (
               <CarouselItem key={index} className="p-4">
                 <Card>
-                  <CardHeader>
-                    <CardTitle>{message.title}</CardTitle>
-                  </CardHeader>
                   <CardContent className="flex flex-col md:flex-row items-start space-y-2 md:space-y-0 md:space-x-4">
                     <Mail className="flex-shrink-0" />
                     <div>
                       <p>{message.content}</p>
-                      <p className="text-xs text-muted-foreground">
-                        {message.received}
-                      </p>
                     </div>
                   </CardContent>
                 </Card>

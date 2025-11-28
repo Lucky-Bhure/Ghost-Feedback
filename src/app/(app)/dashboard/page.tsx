@@ -17,26 +17,25 @@ import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 type AcceptForm = {
-  acceptMessages: boolean;
+  acceptMessages: boolean | undefined;
 };
 
 const Page = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [isSwitchLoading, setIsSwitchLoading] = useState(false);
-
+  const [isSwitchLoading, setIsSwitchLoading] = useState(true);
+  
   const { data: session } = useSession();
   const user: User = session?.user as User;
 
   const form = useForm<AcceptForm>({
     resolver: zodResolver(acceptMessageSchema),
     defaultValues: {
-      acceptMessages: false,
+      acceptMessages: undefined, 
     },
   });
 
-  const { control, watch, setValue } = form;
-
+  const { control, watch, reset } = form;
   const acceptMessages = watch("acceptMessages");
 
   const fetchAcceptMessage = useCallback(async () => {
@@ -45,7 +44,10 @@ const Page = () => {
       const response = await axios.get<ApiResponse & { isAcceptingMessage?: boolean }>(
         `/api/accept-messages`
       );
-      setValue("acceptMessages", !!response.data.isAcceptingMessage);
+
+      reset({
+        acceptMessages: !!response.data.isAcceptingMessage,
+      });
     } catch (error) {
       const axiosError = error as AxiosError<ApiResponse>;
       toast.error(
@@ -54,16 +56,14 @@ const Page = () => {
     } finally {
       setIsSwitchLoading(false);
     }
-  }, [setValue]);
+  }, [reset]);
 
   const fetchMessages = useCallback(async (refresh: boolean = false) => {
     setIsLoading(true);
     try {
       const response = await axios.get<ApiResponse>("/api/get-messages");
       setMessages(response.data.messages || []);
-      if (refresh) {
-        toast.message("Refreshing latest messages");
-      }
+      if (refresh) toast.message("Refreshing latest messages");
     } catch (error) {
       const axiosError = error as AxiosError<ApiResponse>;
       if (axiosError.response?.data.message !== "User not found") {
@@ -87,7 +87,8 @@ const Page = () => {
         acceptMessages: value,
       });
 
-      setValue("acceptMessages", value);
+      reset({ acceptMessages: value });
+
       toast.message(response.data.message);
     } catch (error) {
       const axiosError = error as AxiosError<ApiResponse>;
@@ -128,24 +129,35 @@ const Page = () => {
         document.execCommand("copy");
         document.body.removeChild(textarea);
       }
-
-      toast.message("Profile URL has been copied to clipboard.");
+      toast.message("Profile URL copied.");
     } catch (err) {
       toast.error("Failed to copy URL.");
-      console.error(err);
     }
   };
 
+  /** If switch value hasn’t loaded yet, show placeholder */
+  if (acceptMessages === undefined || isSwitchLoading) {
+    return (
+      <div className="w-full text-center py-10">
+        <Loader2 className="h-6 w-6 animate-spin mx-auto" />
+        <p className="mt-2 text-lg">Loading Dashboard...</p>
+      </div>
+    );
+  }
+
   return (
-    <div className="my-8 md:mx-8 lg:mx-auto p-6 bg-white rounded w-full max-w-6xl">
+    <div className="my-8 md:mx-8 lg:mx-auto px-6 bg-white rounded w-full max-w-6xl">
       <div className="pb-4">
-        <p className='mr-4 font-800 text-2xl'>Welcome, {user?.username || user?.email}</p>
+        <p className='mr-4 font-800 text-2xl'>
+          Welcome, {user?.username || user?.email}
+        </p>
       </div>
 
-      <h1 className="text-4xl font-bold mb-4">Dashboard</h1>
+      <h1 className="text-2xl md:text-3xl font-bold mb-4">Dashboard</h1>
 
+      {/* PROFILE URL */}
       <div className="mb-4">
-        <h2 className="text-lg font-semibold mb-2">Copy Your Unique Link</h2>
+        <h2 className="text-md md:text-lg font-semibold mb-2">Copy Your Unique Link</h2>
         <div className="flex flex-col md:flex-row md:items-center">
           <input
             type="text"
@@ -157,6 +169,7 @@ const Page = () => {
         </div>
       </div>
 
+      {/* SWITCH */}
       <div className="mb-4 flex items-center">
         <Controller
           name="acceptMessages"
@@ -172,11 +185,14 @@ const Page = () => {
             />
           )}
         />
-        <span className="ml-2">Accept Messages: {acceptMessages ? "On" : "Off"}</span>
+        <span className="ml-2">
+          Accept Messages: {acceptMessages ? "On" : "Off"}
+        </span>
       </div>
 
       <Separator />
 
+      {/* REFRESH BUTTON */}
       <Button
         className="mt-4"
         variant="outline"
@@ -188,10 +204,15 @@ const Page = () => {
         {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <RefreshCcw className="h-4 w-4" />}
       </Button>
 
+      {/* MESSAGES GRID */}
       <div className="w-full mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
         {messages?.length > 0 ? (
           messages.map((message, index) => (
-            <MessageCard key={index} message={message} onDelete={() => fetchMessages(false)} />
+            <MessageCard
+              key={index}
+              message={message}
+              onDelete={() => fetchMessages(false)}
+            />
           ))
         ) : (
           <p>No messages to display.</p>

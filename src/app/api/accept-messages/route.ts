@@ -12,10 +12,7 @@ export async function POST(request: Request) {
 
   if (!session || !user) {
     return Response.json(
-      {
-        success: false,
-        message: "User Not Authenticated",
-      },
+      { success: false, message: "User Not Authenticated" },
       { status: 401 }
     );
   }
@@ -34,27 +31,23 @@ export async function POST(request: Request) {
       return Response.json(
         {
           success: false,
-          message: "Failed to update user status to accpet messages",
+          message: "Failed to update user status to accept messages",
         },
         { status: 401 }
       );
-    } else {
-      return Response.json(
-        {
-          success: true,
-          message: "Message acceptance status updated successfully",
-          updatedUser,
-        },
-        { status: 200 }
-      );
     }
-  } catch (error) {
-    console.error("Failed to update user status to accpet messages");
+
     return Response.json(
       {
-        success: false,
-        message: "Failed to update user status to accpet messages",
+        success: true,
+        message: "Message acceptance status updated successfully",
+        updatedUser,
       },
+      { status: 200 }
+    );
+  } catch (error) {
+    return Response.json(
+      { success: false, message: "Failed to update user status" },
       { status: 500 }
     );
   }
@@ -68,10 +61,7 @@ export async function GET(request: Request) {
 
   if (!session || !user) {
     return Response.json(
-      {
-        success: false,
-        message: "User Not Authenticated",
-      },
+      { success: false, message: "User Not Authenticated" },
       { status: 401 }
     );
   }
@@ -83,10 +73,7 @@ export async function GET(request: Request) {
 
     if (!foundUser) {
       return Response.json(
-        {
-          success: false,
-          message: "User not found",
-        },
+        { success: false, message: "User not found" },
         { status: 401 }
       );
     }
@@ -94,17 +81,13 @@ export async function GET(request: Request) {
     return Response.json(
       {
         success: true,
-        isAcceptingMessages: foundUser.isAcceptingMessage,
+        isAcceptingMessage: foundUser.isAcceptingMessage, // <-- FIXED
       },
       { status: 200 }
     );
   } catch (error) {
-    console.error("Error is getting while message acceptance status");
     return Response.json(
-      {
-        success: false,
-        message: "Error is getting while message acceptance status",
-      },
+      { success: false, message: "Error fetching message acceptance status" },
       { status: 500 }
     );
   }

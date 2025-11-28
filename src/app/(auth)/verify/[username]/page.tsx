@@ -54,7 +54,7 @@ const VerifyAccount = () => {
                             control={form.control}
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Username</FormLabel>
+                                    <FormLabel>Verification Code</FormLabel>
                                     <FormControl>
                                         <Input placeholder="Verification Code" {...field} />
                                     </FormControl>

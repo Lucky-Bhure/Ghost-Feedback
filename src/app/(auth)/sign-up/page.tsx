@@ -12,7 +12,7 @@ import axios, { AxiosError } from 'axios'
 import { ApiResponse } from '@/types/ApiResponse'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { Loader2 } from 'lucide-react'
+import { Eye, EyeOff, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
 const page = () => {
@@ -23,6 +23,8 @@ const page = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const debounced = useDebounceCallback(setUsername, 1000);
     const router = useRouter();
+    const [showPassword, setShowPassword] = useState(false);
+
 
     // zod implementation
     const form = useForm<z.infer<typeof signUpSchema>>({
@@ -76,9 +78,9 @@ const page = () => {
             <div className='w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md'>
                 <div className='text-center'>
                     <h1 className='text-4xl font-extrabold tracking-tight lg:text-5xl mb-6'>
-                        Join Ghost Feedback
+                        <Link href={"/"}>Join Ghost Feedback</Link>
                     </h1>
-                    <p className='mb-4'>Sign up to start your anonymous adventure</p>
+                    <p className='mb-4'>Register to start your anonymous adventure</p>
                 </div>
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-6'>
@@ -123,12 +125,33 @@ const page = () => {
                                 <FormItem>
                                     <FormLabel>Password</FormLabel>
                                     <FormControl>
-                                        <Input placeholder="Password" type='password' {...field} />
+                                        <div className="relative">
+                                            <Input
+                                                type={showPassword ? "text" : "password"}
+                                                placeholder="Password"
+                                                {...field}
+                                                className="pr-10"
+                                            />
+
+                                            {/* Toggle Button */}
+                                            <button
+                                                type="button"
+                                                onClick={() => setShowPassword((prev) => !prev)}
+                                                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 hover:text-black"
+                                            >
+                                                {showPassword ? (
+                                                    <EyeOff className="h-5 w-5" />
+                                                ) : (
+                                                    <Eye className="h-5 w-5" />
+                                                )}
+                                            </button>
+                                        </div>
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
                             )}
                         />
+
 
                         <Button type="submit" disabled={isSubmitting}>
                             {
